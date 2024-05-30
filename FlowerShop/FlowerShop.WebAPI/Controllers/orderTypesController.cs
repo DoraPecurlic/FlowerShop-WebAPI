@@ -57,6 +57,19 @@ namespace FlowerShop.WebAPI.Controllers
 
         }
 
+        [HttpDelete(Name = "DeleteType")]
+        public IActionResult DeleteSummary(string typeToDelete)
+        {
+
+            if (!orderTypes.Contains(typeToDelete))
+            {
+                return StatusCode(400, "Summary doesnt exists. Cannot delet summary that does not exist.");
+            }
+
+            orderTypes.RemoveAt(orderTypes.IndexOf(typeToDelete));
+            return StatusCode(200, "Order type successfully deleted.");
+        }
+
 
 
 
