@@ -7,11 +7,7 @@ namespace FlowerShop.WebAPI.Controllers
     [Route("[controller]")]
     public class FlowerOrderController : ControllerBase
     {
-        private static List<string> orderTypes = new List<string>
-        {
-            "Bouquet", "Flower Box", "Flower Basket", "Wedding Floral Arrangement", "Table Floral Arrangement"
-        };
-
+        
         private static List<FlowerOrder> orders = new List<FlowerOrder>
         {
             new FlowerOrder("Rose", 5, "Bouquet"),
