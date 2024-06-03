@@ -14,7 +14,7 @@ namespace FlowerShop.WebAPI.Controllers
             "Bouquet", "Flower Box", "Flower Basket", "Wedding Floral Arrangement", "Table Floral Arrangement"
         };
 
-        private readonly ILogger<orderTypesController> _logger;
+        private readonly ILogger<OrderTypesController> _logger;
 
         [HttpGet(Name = "seeOrderTypes")]
         public IActionResult seeOrderTypes()

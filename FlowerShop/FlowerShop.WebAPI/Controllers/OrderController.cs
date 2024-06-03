@@ -5,26 +5,26 @@ namespace FlowerShop.WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class FlowerOrderController : ControllerBase
+    public class OrderController : ControllerBase
     {
         
-        private static List<FlowerOrder> orders = new List<FlowerOrder>
+        private static List<Order> orders = new List<Order>
         {
-            new FlowerOrder("Rose", 5, "Bouquet"),
-            new FlowerOrder("Tulips", 7, "Flower Basket"),
-            new FlowerOrder("Roses", 10, "Flower Box"),
+            new Order("Rose", 5, "Bouquet"),
+            new Order("Tulips", 7, "Flower Basket"),
+            new Order("Roses", 10, "Flower Box"),
         };
 
-        private readonly ILogger<FlowerOrderController> _logger;
+        private readonly ILogger<OrderController> _logger;
 
-        public FlowerOrderController(ILogger<FlowerOrderController> logger)
+        public OrderController(ILogger<OrderController> logger)
         {
             _logger = logger;
         }
 
 
         [HttpPost(Name = "Order")]
-        public HttpResponseMessage Order([FromBody] FlowerOrder order)
+        public HttpResponseMessage Order([FromBody] Order order)
         {
             if (order == null)
             {
@@ -60,7 +60,7 @@ namespace FlowerShop.WebAPI.Controllers
 
         }
 
-        private bool ProcessOrder(FlowerOrder order)
+        private bool ProcessOrder(Order order)
         {
             if (order.TypeOfFlower == null || order.OrderType == null || order.Quantity <= 0)
             {
@@ -93,7 +93,7 @@ namespace FlowerShop.WebAPI.Controllers
         
 
         [HttpDelete(Name = "DeleteOrder")]
-        public HttpResponseMessage DeleteOrder([FromBody] FlowerOrder order)
+        public HttpResponseMessage DeleteOrder([FromBody] Order order)
         {
             if (order == null)
             {
@@ -142,7 +142,7 @@ namespace FlowerShop.WebAPI.Controllers
 
 
         [HttpPut(Name = "UpdateOrder")]
-        public HttpResponseMessage UpdateOrder([FromBody] FlowerOrder order, [FromQuery] int newQuantity)
+        public HttpResponseMessage UpdateOrder([FromBody] Order order, [FromQuery] int newQuantity)
         {
             if (order == null)
             {

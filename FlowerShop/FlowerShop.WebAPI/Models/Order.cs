@@ -1,8 +1,8 @@
 namespace FlowerShop.WebAPI
 {
-    public class FlowerOrder
+    public class Order
     {
-        public FlowerOrder(string typeOfFlower, int quantity, string orderType)
+        public Order(string typeOfFlower, int quantity, string orderType)
         {
             this.TypeOfFlower = typeOfFlower;
             this.Quantity = quantity;
