@@ -10,7 +10,7 @@ namespace FlowerShop.WebAPI.Controllers
 
     public class OrderController : ControllerBase
     {
-       
+        private string connectionString = WebApplication.Create().Configuration.GetConnectionString("DefaultConnection");
 
         public OrderController()
         {
@@ -24,10 +24,6 @@ namespace FlowerShop.WebAPI.Controllers
         {
             try
             {
-
-                string connectionString = WebApplication.Create().Configuration.GetConnectionString("DefaultConnection");
-
-
 
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
@@ -67,43 +63,57 @@ namespace FlowerShop.WebAPI.Controllers
             }
         }
 
-        /* [HttpPost(Name = "Order")]
-         public HttpResponseMessage Order([FromBody] Order order)
-         {
-             if (order == null)
-             {
-                 return new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent("Order data cannot be null.") };
-             }
-             try
-             {
-                 // Business handling
-                 bool isProcessed = ProcessOrder(order);
-                 if (isProcessed == false)
-                 {
-                     return new HttpResponseMessage(HttpStatusCode.InternalServerError)
-                     {
-                         Content = new StringContent("Order processing faild.")
-                     };
-                 }
 
-                 orders.Add(order);
-                 return new HttpResponseMessage(HttpStatusCode.OK)
-                 {
-                     Content = new StringContent("Succesfully ordered! Thank you for ordering .")
-                 };
+        [HttpGet(Name = "GetOrders")]
+        public IActionResult SeeOrders()
+        {
+            try
+            {
+                List<string> orders = new List<string>();
+                using (var connection = new NpgsqlConnection(connectionString))
+                {
+                   
+                    connection.Open();
 
-             }
-             catch (Exception ex)
-             {
-                 _logger.LogError($"Exception occurred: {ex.Message}");
-                 return new HttpResponseMessage(HttpStatusCode.InternalServerError)
-                 {
-                     Content = new StringContent("An error occurred while placing the order")
-                 };
-             }
+                    using (var command = new NpgsqlCommand())
+                    {
+                        command.Connection = connection;
+                        command.CommandText = @"SELECT ""User"".""FirstName"", ""User"".""LastName"", ""OrderType"".""Type"", ""Order"".""FlowerType"", ""Order"".""Quantity"" FROM  ""Order""  " + 
+                           @"INNER JOIN ""User"" ON ""Order"".""CreatedByUserId"" = ""User"".""Id""" +
+                            @"INNER JOIN  ""OrderType"" ON ""Order"".""OrderTypeId"" = ""OrderType"".""Id"" ";
 
-         }
+                        using (var reader = command.ExecuteReader()) {
+                            if (reader.HasRows) {
+                                while (reader.Read()) { 
+                                    string firstName = reader.GetString(0); //dohvaca vrijednost prvog stupca i vraca u string
+                                    string lastName = reader.GetString(1);
+                                    string orderType = reader.GetString(2);
+                                    string flowerType = reader.GetString(3);
+                                    int quantity = reader.GetInt32(4);
 
+                                    //formatiranje
+                                    string orderDetails = $"Custumer: {firstName} {lastName}, Order Type: {orderType}, flowers: {flowerType}, Number of Flowers: {quantity}";
+
+                                    orders.Add(orderDetails);
+                                }
+
+                            }
+                        }
+                    }
+
+                }
+
+                    return Ok(orders.ToArray());
+            }
+            catch( Exception ex) {
+            
+
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+        /* 
          private bool ProcessOrder(Order order)
          {
              if (order.FlowerType == null || order.OrderTypeId == null || order.Quantity <= 0)
