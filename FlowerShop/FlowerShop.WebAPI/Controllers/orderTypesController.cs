@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FlowerShop.WebAPI.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 using System.Net;
 
 namespace FlowerShop.WebAPI.Controllers
@@ -8,7 +10,6 @@ namespace FlowerShop.WebAPI.Controllers
     [ApiController]
     public class OrderTypesController : ControllerBase
     {
-
         private static List<string> orderTypes = new List<string>
         {
             "Bouquet", "Flower Box", "Flower Basket", "Wedding Floral Arrangement", "Table Floral Arrangement"
@@ -40,8 +41,8 @@ namespace FlowerShop.WebAPI.Controllers
             }
             try
             {
-               
-               orderTypes.Add(newType);
+
+                orderTypes.Add(newType);
                 return new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent("Succesfully added new order type.")
@@ -84,7 +85,7 @@ namespace FlowerShop.WebAPI.Controllers
                         Content = new StringContent($"Order type '{existingType}' not found")
                     };
                 }
-               
+
                 orderTypes[index] = updatedType;
                 return new HttpResponseMessage(HttpStatusCode.OK)
                 {

@@ -12,13 +12,7 @@ namespace FlowerShop.WebAPI.Controllers
     {
         private string connectionString = WebApplication.Create().Configuration.GetConnectionString("DefaultConnection");
 
-        public OrderController()
-        {
-        }
 
-
-
-        
         [HttpPost(Name = "Order")]
         public IActionResult Order([FromBody] Order order)
         {
@@ -111,133 +105,50 @@ namespace FlowerShop.WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
 
+          
+
         }
 
-        /* 
-         private bool ProcessOrder(Order order)
-         {
-             if (order.FlowerType == null || order.OrderTypeId == null || order.Quantity <= 0)
-             {
-                 return false;
-             }
-             return true;
-         }
+        [HttpDelete(Name = "DeleteOrder")]
+        public IActionResult DeleteOrder(int id)
+        {
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    using (var command = new NpgsqlCommand())
+                    {
+                        command.Connection = connection;
+                        command.CommandText = @"DELETE FROM ""Order"" WHERE ""Id"" = @Id";
+                        command.Parameters.AddWithValue("@Id", id);
+
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        if (rowsAffected == 0)
+                        {
+                            return NotFound($"No order with Id = {id} found.");
+                        }
+                    }
+                }
+
+                return Ok("Order successfully deleted.");
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
 
 
 
-         [HttpGet(Name = "SeeOrders")]
-         public IActionResult SeeOrders()
-         {
-
-             try
-             {
-                 List<string> displayOrders = new List<string>();
-                 foreach (var order in orders)
-                 {
-                     displayOrders.Add($"Flower type: {order.FlowerType}, Quantity: {order.Quantity}, Order type: {order.OrderTypeId}");
-                 }
-                 return Ok(displayOrders.ToArray());
-             }
-             catch
-             {
-                 return BadRequest();
-             }
-
-         }
-
-
-         [HttpDelete(Name = "DeleteOrder")]
-         public HttpResponseMessage DeleteOrder([FromBody] Order order)
-         {
-             if (order == null)
-             {
-                 return new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent("Order data cannot be null.") };
-             }
-             try
-             {
-                 // Business handling
-                 bool isProcessed = ProcessOrder(order);
-                 if (isProcessed == false)
-                 {
-                     return new HttpResponseMessage(HttpStatusCode.InternalServerError)
-                     {
-                         Content = new StringContent("Order deleting faild.")
-                     };
-                 }
-
-                 int indexToRemove = -1;
-                 for (int i = 0; i < orders.Count; i++)
-                 {
-                     if (orders[i].FlowerType == order.FlowerType && orders[i].Quantity == order.Quantity && orders[i].OrderTypeId == order.OrderTypeId)
-                     {
-                         indexToRemove = i;
-                         break;
-                     }
-                 }
-
-                 if (indexToRemove != -1)
-                 {
-                     orders.RemoveAt(indexToRemove);
-                     return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("Order deleted successfully.") };
-                 }
-                 return new HttpResponseMessage(HttpStatusCode.NotFound);
-
-             }
-             catch (Exception ex)
-             {
-                 _logger.LogError($"Exception occurred: {ex.Message}");
-                 return new HttpResponseMessage(HttpStatusCode.InternalServerError)
-                 {
-                     Content = new StringContent("An error occurred while deleting the order.")
-                 };
-             }
-
-         }
-
-
-         [HttpPut(Name = "UpdateOrder")]
-         public HttpResponseMessage UpdateOrder([FromBody] Order order, [FromQuery] int newQuantity)
-         {
-             if (order == null)
-             {
-                 return new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent("Order data cannot be null.") };
-             }
-             try
-             {
-                 // Business handling
-                 bool isProcessed = ProcessOrder(order);
-                 if (isProcessed == false)
-                 {
-                     return new HttpResponseMessage(HttpStatusCode.InternalServerError)
-                     {
-                         Content = new StringContent("Order updating faild.")
-                     };
-                 }
-
-
-                 for (int i = 0; i < orders.Count; i++)
-                 {
-                     if (orders[i].FlowerType == order.FlowerType && orders[i].Quantity == order.Quantity && orders[i].OrderTypeId == order.OrderTypeId)
-                     {
-                         orders[i].Quantity = newQuantity;
-                         return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("Order updated successfully.") };
-                     }
-                 }
-                 return new HttpResponseMessage(HttpStatusCode.NotFound);
-
-             }
-             catch (Exception ex)
-             {
-                 _logger.LogError($"Exception occurred: {ex.Message}");
-                 return new HttpResponseMessage(HttpStatusCode.InternalServerError)
-                 {
-                     Content = new StringContent("An error occurred while deleting the order.")
-                 };
-             }
-
-         }*/
 
 
 
-    }
+          
+
+
+        }
 }
