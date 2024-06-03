@@ -6,7 +6,7 @@ namespace FlowerShop.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class orderTypesController : ControllerBase
+    public class OrderTypesController : ControllerBase
     {
 
         private static List<string> orderTypes = new List<string>

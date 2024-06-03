@@ -90,8 +90,7 @@ namespace FlowerShop.WebAPI.Controllers
             }
 
         }
-
-
+        
 
         [HttpDelete(Name = "DeleteOrder")]
         public HttpResponseMessage DeleteOrder([FromBody] FlowerOrder order)
